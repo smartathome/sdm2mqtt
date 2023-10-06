@@ -163,6 +163,20 @@ In `config.rename.py`, specify:
 
 * Test locally if everything is working properly
   * python3 fluvius-mqtt.py
+    ```python
+    user@server:/opt/fluvius2mqtt $ python3 fluvius-mqtt.py 
+    fluvius-mqtt INFO: FUNCTION:<module> LINE:70: Starting /opt/fluvius2mqtt/fluvius-mqtt.py; version = 1.0.0
+    fluvius-mqtt.mqtt.mqtt INFO: FUNCTION:__init__ LINE:103: >> paho-mqtt version = 1.5.1
+    fluvius-mqtt.mqtt.mqtt INFO: FUNCTION:__init__ LINE:117: MQTT Client ID = mqtt-fluvius
+    fluvius-mqtt.P1_serial INFO: FUNCTION:__init__ LINE:68: Using USB device /dev/ttyUSB0 with baud 115200
+    fluvius-mqtt.mqtt.mqtt INFO: FUNCTION:__internet_on LINE:229: Internet connectivity to MQTT broker 192.168.10.15 at port 1883 available
+    fluvius-mqtt.mqtt.mqtt INFO: FUNCTION:run LINE:576: Start mqtt loop...
+    fluvius-mqtt.hadiscovery INFO: FUNCTION:run LINE:158: Home Assistant config discovery is enabled
+    fluvius-mqtt.P1_parser INFO: FUNCTION:__decode_telegram_element LINE:162: Found 40 OBIS codes in config.py to parse from the meter
+    fluvius-mqtt.P1_parser INFO: FUNCTION:__decode_telegram_element LINE:175: Meter type found = /FLU5\253770234_A with DSMR version = 50217
+    fluvius-mqtt.P1_parser INFO: FUNCTION:__decode_telegram_element LINE:176: Meter serial found = 1SAG0000000262. Unless changed, the last 3 characters "262" are appended to your MQTT_TOPIC_PREFIX in config.py
+    fluvius-mqtt.P1_parser INFO: FUNCTION:__publish_telegram LINE:78: MQTT_TOPIC_PREFIX used for publishing data = fluvius_262/
+    ```
 
 * Enable and start the service
   * sudo systemctl enable fluvius-mqtt
