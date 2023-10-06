@@ -41,9 +41,9 @@ MQTT_QOS = 1
 MQTT_USERNAME = "username"
 MQTT_PASSWORD = "secret"
 
-# You can use the last 10 characters of the meter serial number to make this device and the MQTT_TOPIC_PREFIX unique
+# You can use the last 3 characters of the meter serial number to make this device and the MQTT_TOPIC_PREFIX unique
 # When left blank, the MQTT_TOPIC_PREFIX will just be fluvius by default
-MQTT_METER_UNIQUE = "0123456789"
+MQTT_METER_UNIQUE = "789"
 
 if PRODUCTION:
   if MQTT_METER_UNIQUE == "":

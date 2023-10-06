@@ -94,27 +94,27 @@ definition = {
 
 "0-0:96.1.4":
   ["Version information", "elec", "version", "^.*\((.*)\)", "",
-   "str", "1", "1", "60", "1", "mdi:counter"],
+   "str", "1", "1", "60", "1", "mdi:numeric"],
 
 "0-0:96.1.1":
   ["Equipment identifier", "elec", "serial", "^.*\((\d{28})", "",
-   "str", "1", "1", "60", "1", "mdi:counter"],
+   "str", "1", "1", "60", "1", "mdi:tag-text-outline"],
 
 "0-0:1.0.0":
   ["Timestamp", "elec", "timestamp", "^.*\((\d{12})(S|W)\)", "",
-   "int", "1", "1", "60", "1", "mdi:counter"],
+   "int", "1", "1", "60", "1", "mdi:clock-time-four"],
 
 "0-0:96.7.21.255":
   ["Number power failures", "elec", "power_failures", "^.*\((.*)\)",
-   "", "str", "0", "1", "60", "1", "mdi:counter"],
+   "", "str", "0", "1", "60", "1", "mdi:transmission-tower-off"],
 
 "0-0:96.7.9.255":
   ["Number long power failures", "elec", "long_power_failures", "^.*\((.*)\)",
-   "", "str", "0", "1", "60", "1", "mdi:counter"],
+   "", "str", "0", "1", "60", "1", "mdi:transmission-tower-off"],
 
 "0-0:96.14.0":
   ["Tariff indicator electricity", "elec", "tariff_indicator", "^.*\((.*)\)",
-  "", "str", "0", "1", "60", "1", "mdi:counter"],
+  "", "str", "0", "1", "60", "1", "mdi:weather-night"],
 
 "1-0:21.7.0":
   ["Instant active power L1 +P", "elec", "P_L1_cons", "^.*\((.*)\*kW\)",
@@ -154,7 +154,7 @@ definition = {
 
 "0-1:96.1.0":
   ["Equipment Identifier", "gas", "serial", "^.*\(\d{26}(.*)\)",
-  "", "str", "1", "1", "60", "0", "mdi:counter"],
+  "", "str", "1", "1", "60", "0", "mdi:tag-text-outline"],
 
 "1-0:1.8.1":
   ["Elec consumed (Tariff 1)", "elec", "elec_cons_t1", "^.*\((.*)\*kWh\)",
@@ -207,35 +207,35 @@ definition = {
 
 "1-0:32.36.0":
   ["Number voltage swells L1", "elec", "V_L1_sw", "^.*\((.*)\)",
-  "", "str", "0", "1", "60", "1", "mdi:gauge"],
+  "", "str", "0", "1", "60", "1", "mdi:elevation-rise"],
 
 "1-0:52.36.0":
   ["Number voltage swells L2", "elec", "V_L2_sw", "^.*\((.*)\)",
-  "", "str", "0", "1", "60", "0", "mdi:gauge"],
+  "", "str", "0", "1", "60", "0", "mdi:elevation-rise"],
 
 "1-0:72.36.0":
   ["Number voltage swells L3", "elec", "V_L3_sw", "^.*\((.*)\)",
-  "", "str", "0", "1", "60", "0", "mdi:gauge"],
+  "", "str", "0", "1", "60", "0", "mdi:elevation-rise"],
 
 "1-0:32.32.0":
   ["Number voltage sags L1", "elec", "V_L1_sa", "^.*\((.*)\)",
-  "", "str", "0", "1", "60", "1", "mdi:gauge"],
+  "", "str", "0", "1", "60", "1", "mdi:elevation-decline"],
 
 "1-0:52.32.0":
   ["Number voltage sags L2", "elec", "V_L2_sa", "^.*\((.*)\)",
-  "", "str", "0", "1", "60", "0", "mdi:gauge"],
+  "", "str", "0", "1", "60", "0", "mdi:elevation-decline"],
 
 "1-0:72.32.0":
   ["Number voltage sags L3", "elec", "V_L3_sa", "^.*\((.*)\)",
-  "", "str", "0", "1", "60", "0", "mdi:gauge"],
+  "", "str", "0", "1", "60", "0", "mdi:elevation-decline"],
 
 "0-0:96.3.10":
   ["Breaker state", "elec", "breaker", "^.*\((.*)\)",
-  "", "str", "0", "1", "60", "1", "mdi:gauge"],
+  "", "str", "0", "1", "60", "1", "mdi:electric-switch"],
 
 "0-0:17.0.0":
   ["Limiter threshold", "elec", "limiter", "^.*\((.*)\*kW\)",
-  "", "float", "0", "1", "60", "1", "mdi:gauge"],
+  "", "float", "0", "1", "60", "1", "mdi:speedometer"],
 
 "1-0:31.4.0":
   ["Fuse supervision threshold L1", "elec", "fuse", "^.*\((.*)\*A\)",
@@ -243,15 +243,15 @@ definition = {
 
 "0-0:96.13.0":
   ["Text message", "elec", "text", "^.*\((.*)\)",
-  "", "str", "0", "1", "60", "1", "mdi:gauge"],
+  "", "str", "0", "1", "60", "1", "mdi:text"],
 
 "1-0:1.6.0":
   ["Monthly peak", "elec", "m_peak", "^.*\((\d{12})(S|W)\)\((.*)\*kW\)",
-  "", "str", "0", "1", "60", "1", "mdi:gauge"],
+  "", "str", "0", "1", "60", "1", "mdi:chart-bar"],
 
 #"0-0:98.1.0":
 #  ["Historical peaks", "elec", "h_peak", "^.*\((.*)S\)\((.*)\*kW\)",
-#  "", "int", "0", "1", "12", "1", "mdi:gauge"],
+#  "", "int", "0", "1", "12", "1", "mdi:chart-bar"],
 
 "1-0:1.4.0":
   ["Current average demand", "elec", "avg_dem", "^.*\((.*)\*kW\)",

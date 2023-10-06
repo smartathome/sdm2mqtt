@@ -9,7 +9,7 @@ Includes Home Assistant MQTT Auto Discovery
 
 **Supported data fields:**
 
-| OBIS CODE	| Description | MQTT Topic | Unit |
+| OBIS CODE	| Description | MQTT Tag | Unit |
 | --- | --- | --- |--- |
 0-0:96.1.4 | Version information | version | 
 0-0:96.1.1 | Equipment identifier | serial | 
