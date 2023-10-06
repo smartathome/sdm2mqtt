@@ -9,49 +9,49 @@ Includes Home Assistant MQTT Auto Discovery
 
 **Supported data fields:**
 
-| OBIS CODE	| MEANING |
-| ---|---|
-0-0:96.1.4 | Version information | 
-0-0:96.1.1 | Equipment identifier | 
-0-0:1.0.0 | Timestamp [s] | 
-0-0:96.7.21.255 | Number of power failures in any phases | 
-0-0:96.7.9.255 | Number of long power failures in any phases | 
-0-0:96.14.0 | Tariff indicator electricity | 
-1-0:21.7.0 | Instantaneous active power L1 +P | kW
-1-0:41.7.0 | Instantaneous active power L2 +P | kW
-1-0:61.7.0 | Instantaneous active power L3 +P | kW
-1-0:22.7.0 | Instantaneous active power L1 -P | kW
-1-0:42.7.0 | Instantaneous active power L2 -P | kW
-1-0:62.7.0 | Instantaneous active power L3 -P | kW
-1-0:1.7.0 | Actual electricity power delivered +P | kW
-1-0:2.7.0 | Actual electricity power received -P | kW
-0-1:24.2.1 | Gas consumption [m\u00b3] | kW
-0-1:96.1.0 | Equipment Identifier | 
-1-0:1.8.1 | Electricity consumed (Tariff 1) | kWh
-1-0:1.8.2 | Electricity consumed (Tariff 2) | kWh
-1-0:2.8.1 | Electricity produced (Tariff 1) | kWh
-1-0:2.8.2 | Electricity produced (Tariff 2) | kWh
-1-0:1.8.3 | Electricity consumed | kWh
-1-0:2.8.3 | Electricity produced | kWh
-1-0:32.7.0 | Instantaneous voltage L1 | V
-1-0:52.7.0 | Instantaneous voltage L2 | V
-1-0:72.7.0 | Instantaneous voltage L3 | V
-1-0:31.7.0 | Instantaneous current L1 | A
-1-0:51.7.0 | Instantaneous current L2 | A
-1-0:71.7.0 | Instantaneous current L3 | A
-1-0:32.36.0 | Number of voltage swells L1 | 
-1-0:52.36.0 | Number of voltage swells L2 | 
-1-0:72.36.0 | Number of voltage swells L3 | 
-1-0:32.32.0 | Number of voltage sags L1 | 
-1-0:52.32.0 | Number of voltage sags L2 | 
-1-0:72.32.0 | Number of voltage sags L3 | 
-0-0:96.3.10 | Breaker state | 
-0-0:17.0.0 | Limiter threshold | 
-1-0:31.4.0 | Fuse supervision threshold L1 | 
-0-0:96.13.0 | Text message | 
-1-0:1.6.0 | Monthly peak | 
-"0-0:98.1.0" | Historical peaks | 
-1-0:1.4.0 | Current average demand | 
+| OBIS CODE	| Description | MQTT Topic | Unit |
+| --- | --- | --- |--- |
+0-0:96.1.4 | Version information | version | 
+0-0:96.1.1 | Equipment identifier | serial | 
+0-0:1.0.0 | Timestamp | timestamp | 
+0-0:96.7.21.255 | Number power failures | power_failures | 
+0-0:96.7.9.255 | Number long power failures | long_power_failures | 
+0-0:96.14.0 | Tariff indicator electricity | tariff_indicator | 
+1-0:21.7.0 | Instantaneous active power L1 +P | P_L1_consumed | kW
+1-0:41.7.0 | Instantaneous active power L2 +P | P_L2_consumed | kW
+1-0:61.7.0 | Instantaneous active power L3 +P | P_L3_consumed | kW
+1-0:22.7.0 | Instantaneous active power L1 -P | P_L1_produced | kW
+1-0:42.7.0 | Instantaneous active power L2 -P | P_L2_produced | kW
+1-0:62.7.0 | Instantaneous active power L3 -P | P_L3_produced | kW
+1-0:1.7.0 | Actual electricity power delivered +P | P_consumed | kW
+1-0:2.7.0 | Actual electricity power received -P | P_produced | kW
+0-1:24.2.1 | Gas consumption [m\u00b3] | gas_consumed | kW
+0-1:96.1.0 | Equipment Identifier | serial | 
+1-0:1.8.1 | Electricity consumed (Tariff 1) | elec_consumed_tar1 | kWh
+1-0:1.8.2 | Electricity consumed (Tariff 2) | elec_consumed_tar2 | kWh
+1-0:2.8.1 | Electricity produced (Tariff 1) | elec_produced_tar1 | kWh
+1-0:2.8.2 | Electricity produced (Tariff 2) | elec_produced_tar2 | kWh
+1-0:1.8.3 | Electricity consumed | elec_consumed | kWh
+1-0:2.8.3 | Electricity produced | elec_produced | kWh
+1-0:32.7.0 | Instantaneous voltage L1 | V_L1 | V
+1-0:52.7.0 | Instantaneous voltage L2 | V_L2 | V
+1-0:72.7.0 | Instantaneous voltage L3 | V_L3 | V
+1-0:31.7.0 | Instantaneous current L1 | I_L1 | A
+1-0:51.7.0 | Instantaneous current L2 | I_L2 | A
+1-0:71.7.0 | Instantaneous current L3 | I_L3 | A
+1-0:32.36.0 | Number of voltage swells L1 | V_L1_swells | 
+1-0:52.36.0 | Number of voltage swells L2 | V_L2_swells | 
+1-0:72.36.0 | Number of voltage swells L3 | V_L3_swells | 
+1-0:32.32.0 | Number of voltage sags L1 | V_L1_sags | 
+1-0:52.32.0 | Number of voltage sags L2 | V_L2_sags | 
+1-0:72.32.0 | Number of voltage sags L3 | V_L3_sags | 
+0-0:96.3.10 | Breaker state | breaker_state | 
+0-0:17.0.0 | Limiter threshold | limiter_threshold | 
+1-0:31.4.0 | Fuse supervision threshold L1 | fuse_threshold | 
+0-0:96.13.0 | Text message | text_message | 
+1-0:1.6.0 | Monthly peak | monthly_peak | kW
+_0-0:98.1.0_ | _Historical peaks_ | _historical_peaks_ | 
+1-0:1.4.0 | Current average demand | average_demand | kW
 
 In `dsmr50.py`, specify:
 * Which messages to be parsed
