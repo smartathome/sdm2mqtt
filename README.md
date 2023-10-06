@@ -148,15 +148,23 @@ In `config.rename.py`, specify:
 * Install Python packages:
   * sudo pip3 install paho-mqtt --user
   * sudo pip3 install persist-queue --user
+
 * Install from Git and configure:
   * cd /opt
   * git clone https://github.com/smartathome/fluvius2mqtt.git
   * cd fluvius2mqtt/
   * sudo vi systemd/fluvius-mqtt.service
+
 * Adapt ExecStart under [Service] to ExecStart=/opt/fluvius2mqtt/fluvius-mqtt.py
   * sudo cp -p systemd/fluvius-mqtt.service /etc/systemd/system
+
 * Edit the MQTT configuration and know that the MQTT_TOPIC_PREFIX = "fluvius" with last 3 digits of meter serial will show these messages as topic fluvius_XXX/. Configuration will be shown as homeassistant/sensor/fluvius_XXX/
   * sudo cp -p config.rename.py config.py && sudo vi config.py
+
+* Test locally if everything is working properly
+  * python3 fluvius-mqtt.py
+
+* Enable and start the service
   * sudo systemctl enable fluvius-mqtt
   * sudo systemctl start fluvius-mqtt
 * And check if it is running properly
