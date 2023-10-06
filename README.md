@@ -11,36 +11,47 @@ Includes Home Assistant MQTT Auto Discovery
 
 | OBIS CODE	| MEANING |
 | ---|---|
-| 0-0:96.1.4	| ID	|
-| 0-0:96.1.1	| Serial number of electricity meter (in ASCII hex)	|
-| 0-0:1.0.0	| Timestamp of the telegram	|
-| 1-0:1.8.1	| Rate 1 (day) – total consumption	|
-| 1-0:1.8.2	| Rate 2 (night) – total consumption	|
-| 1-0:2.8.1	| Rate 1 (day) – total production	|
-| 1-0:2.8.2	| Rate 2 (night) – total production	|
-| 0-0:96.14.0	| Current rate (1=day,2=night)	|
-| 1-0:1.7.0	| All phases consumption	|
-| 1-0:2.7.0	| All phases production	|
-| 1-0:21.7.0	| L1 consumption	|
-| 1-0:41.7.0	| L2 consumption	|
-| 1-0:61.7.0	| L3 consumption	|
-| 1-0:22.7.0	| L1 production	|
-| 1-0:42.7.0	| L2 production	|
-| 1-0:62.7.0	| L3 production	|
-| 1-0:32.7.0	| L1 voltage	|
-| 1-0:52.7.0	| L2 voltage	|
-| 1-0:72.7.0	| L3 voltage	|
-| 1-0:31.7.0	| L1 current	|
-| 1-0:51.7.0	| L2 current	|
-| 1-0:71.7.0	| L3 current	|
-| 0-0:96.3.10	| Switch position electricity	|
-| 0-0:17.0.0	| Max. allowed power/phase	|
-| 1-0:31.4.0	| Max. allowed current/plase	|
-| 0-0:96.13.0	| Message	|
-| 0-1:24.1.0	| Other devices on bus	|
-| 0-1:96.1.1	| Serial number of natural gas meter (in ASCII hex)	|
-| 0-1:24.4.0	| Switch position natural gas	|
-| 0-1:24.2.3	| Reading from natural gas meter (timestamp) (value)	|
+0-0:96.1.4 | Version information | 
+0-0:96.1.1 | Equipment identifier | 
+0-0:1.0.0 | Timestamp [s] | 
+0-0:96.7.21.255 | Number of power failures in any phases | 
+0-0:96.7.9.255 | Number of long power failures in any phases | 
+0-0:96.14.0 | Tariff indicator electricity | 
+1-0:21.7.0 | Instantaneous active power L1 +P | kW
+1-0:41.7.0 | Instantaneous active power L2 +P | kW
+1-0:61.7.0 | Instantaneous active power L3 +P | kW
+1-0:22.7.0 | Instantaneous active power L1 -P | kW
+1-0:42.7.0 | Instantaneous active power L2 -P | kW
+1-0:62.7.0 | Instantaneous active power L3 -P | kW
+1-0:1.7.0 | Actual electricity power delivered +P | kW
+1-0:2.7.0 | Actual electricity power received -P | kW
+0-1:24.2.1 | Gas consumption [m\u00b3] | kW
+0-1:96.1.0 | Equipment Identifier | 
+1-0:1.8.1 | Electricity consumed (Tariff 1) | kWh
+1-0:1.8.2 | Electricity consumed (Tariff 2) | kWh
+1-0:2.8.1 | Electricity produced (Tariff 1) | kWh
+1-0:2.8.2 | Electricity produced (Tariff 2) | kWh
+1-0:1.8.3 | Electricity consumed | kWh
+1-0:2.8.3 | Electricity produced | kWh
+1-0:32.7.0 | Instantaneous voltage L1 | V
+1-0:52.7.0 | Instantaneous voltage L2 | V
+1-0:72.7.0 | Instantaneous voltage L3 | V
+1-0:31.7.0 | Instantaneous current L1 | A
+1-0:51.7.0 | Instantaneous current L2 | A
+1-0:71.7.0 | Instantaneous current L3 | A
+1-0:32.36.0 | Number of voltage swells L1 | 
+1-0:52.36.0 | Number of voltage swells L2 | 
+1-0:72.36.0 | Number of voltage swells L3 | 
+1-0:32.32.0 | Number of voltage sags L1 | 
+1-0:52.32.0 | Number of voltage sags L2 | 
+1-0:72.32.0 | Number of voltage sags L3 | 
+0-0:96.3.10 | Breaker state | 
+0-0:17.0.0 | Limiter threshold | 
+1-0:31.4.0 | Fuse supervision threshold L1 | 
+0-0:96.13.0 | Text message | 
+1-0:1.6.0 | Monthly peak | 
+"0-0:98.1.0" | Historical peaks | 
+1-0:1.4.0 | Current average demand | 
 
 In `dsmr50.py`, specify:
 * Which messages to be parsed
@@ -140,7 +151,7 @@ In `config.rename.py`, specify:
 * Install from Git and configure:
   * cd /opt
   * git clone https://github.com/smartathome/fluvius2mqtt.git
-  * cd dsmr2mqtt/
+  * cd fluvius2mqtt/
   * sudo vi systemd/fluvius-mqtt.service
 * Adapt ExecStart under [Service] to ExecStart=/opt/fluvius2mqtt/fluvius-mqtt.py
   * sudo cp -p systemd/fluvius-mqtt.service /etc/systemd/system
@@ -169,7 +180,7 @@ Set `PRODUCTION = False` in `config.py` to use the simulation file. In that case
 
 Tested under Debian/Raspbian.
 Tested with DSMR v5.0 meter in Belgium. For other DSMR versions, `dsmr50.py` needs to be adapted.
-For all SMR specs, see [netbeheer](https://www.netbeheernederland.nl/dossiers/slimme-meter-15/documenten)
+For all SMR specs, see [Fluvius]([https://www.netbeheernederland.nl/dossiers/slimme-meter-15/documenten](https://www.fluvius.be/sites/fluvius/files/2019-12/e-mucs_h_ed_1_3.pdf)) or [netbeheer](https://www.netbeheernederland.nl/dossiers/slimme-meter-15/documenten)
 
 ## Licence
 GPL v3
