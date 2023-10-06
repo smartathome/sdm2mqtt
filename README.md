@@ -1,4 +1,4 @@
-# DSMR MQTT
+# Fluvius P1 to MQTT
 MQTT client for Fluvius smart energy meter (DSMR5) - "Slimme Meter". Written in Python 3.x
  
 Connect Smart Meter via a P1 USB cable to e.g. Raspberry Pi
@@ -44,27 +44,61 @@ Includes Home Assistant MQTT Auto Discovery
 
 In `dsmr50.py`, specify:
 * Which messages to be parsed
+* Description and units
 * MQTT topics and tags
 * MQTT broadcast frequency
+* Possible multiplications to apply to the measurements
 * Auto discovery for Home Assistant
 
-A typical MQTT message broadcasted
+A typical MQTT message broadcasted with meter data
 ```json
 {
-"V1":226.0,
-"V2":232.0,
-"V3":229.0,
-"database":"dsmr",
-"el_consumed":24488767.0,
-"el_returned":21190375.0,
-"p_consumed":1130.0,
-"p_generated":0.0,
-"serial":"33363137",
-"timestamp":1642275125
+    "I_L1": 1.82,
+    "P_L1_cons": 0,
+    "P_L1_prod": 0.169,
+    "P_cons": 0,
+    "P_prod": 0.169,
+    "V_L1": 235.5,
+    "avg_dem": 0,
+    "breaker": "1",
+    "elec_cons": 9099.085,
+    "elec_cons_t1": 4533.804,
+    "elec_cons_t2": 4565.281,
+    "elec_prod": 6464.323,
+    "elec_prod_t1": 4580.828,
+    "elec_prod_t2": 1883.495,
+    "fuse": 999,
+    "limiter": 999.9,
+    "m_peak": "03.924",
+    "serial": "1SAG0000000262",
+    "tariff_indicator": "0001",
+    "text": "",
+    "timestamp": 230906095410,
+    "version": "50217"
+}
+```
+A typical MQTT message broadcasted with Home Assistant configuration
+```json
+{
+    "unique_id": "m_peak",
+    "state_topic": "fluvius_262/elec",
+    "name": "Monthly peak",
+    "value_template": "{{ value_json.m_peak }}",
+    "icon": "mdi:gauge",
+    "device": {
+        "identifiers": [
+            "fluvius"
+        ]
+    }
 }
 ```
 
 A virtual DSMR parameter is implemented (el_consumed and el_returned, which is sum of tarif1 and tarif2 (nacht/low en dag/normal tariff)) - as some have a dual tariff meter, while energy company administratively considers this as a mono tarif meter.
+
+In `config.rename.py`, specify:
+* MQTT server details
+* Logging level
+* Auto discovery on/off
 
 ```diff
 -ATTENTION:
@@ -105,28 +139,27 @@ A virtual DSMR parameter is implemented (el_consumed and el_returned, which is s
   * sudo pip3 install persist-queue --user
 * Install from Git and configure:
   * cd /opt
-  * git clone https://github.com/smartathome/dsmr2mqtt.git
+  * git clone https://github.com/smartathome/fluvius2mqtt.git
   * cd dsmr2mqtt/
-  * sudo dos2unix systemd/dsmr-mqtt.service && sudo dos2unix config.rename.py
-  * sudo vi systemd/dsmr-mqtt.service
-* Adapt ExecStart under [Service] to ExecStart=/opt/dsmr2mqtt/dsmr-mqtt.py
-  * sudo cp -p dsmr2mqtt/systemd/dsmr-mqtt.service /etc/systemd/system
-* Edit the MQTT configuration and know that the MQTT_TOPIC_PREFIX = "dsmr" will show these messages as topic dsmr/. Configuration will be shown as homeassistant/sensor/dsmr/
+  * sudo vi systemd/fluvius-mqtt.service
+* Adapt ExecStart under [Service] to ExecStart=/opt/fluvius2mqtt/fluvius-mqtt.py
+  * sudo cp -p systemd/fluvius-mqtt.service /etc/systemd/system
+* Edit the MQTT configuration and know that the MQTT_TOPIC_PREFIX = "fluvius" with last 3 digits of meter serial will show these messages as topic fluvius_XXX/. Configuration will be shown as homeassistant/sensor/fluvius_XXX/
   * sudo cp -p config.rename.py config.py && sudo vi config.py
-  * sudo systemctl enable dsmr-mqtt
-  * sudo systemctl start dsmr-mqtt
+  * sudo systemctl enable fluvius-mqtt
+  * sudo systemctl start fluvius-mqtt
 * And check if it is running properly
-  * sudo systemctl status dsmr-mqtt
+  * sudo systemctl status fluvius-mqtt
     ```python
-    user@server:/opt/dsmr2mqtt $ sudo systemctl status dsmr-mqtt
-    dsmr-mqtt.service - P1 dsmr smartmeter
-     Loaded: loaded (/etc/systemd/system/dsmr-mqtt.service; enabled; vendor preset: enabled)
+    user@server:/opt/fluvius2mqtt $ sudo systemctl status fluvius-mqtt
+    fluvius-mqtt.service - Fluvius smart energy meter P1
+     Loaded: loaded (/etc/systemd/system/fluvius-mqtt.service; enabled; vendor preset: enabled)
      Active: active (running) since Tue 2023-09-26 22:21:06 CEST; 18h ago
-     Main PID: 1026 (dsmr-mqtt.py)
+     Main PID: 1026 (fluvius-mqtt.py)
       Tasks: 6 (limit: 1595)
         CPU: 56.349s
-     CGroup: /system.slice/dsmr-mqtt.service
-             └─1026 /usr/bin/python3 /opt/dsmr2mqtt/dsmr-mqtt.py
+     CGroup: /system.slice/fluvius-mqtt.service
+             └─1026 /usr/bin/python3 /opt/fluvius2mqtt/fluvius-mqtt.py
              ```
 
 Use http://mqtt-explorer.com/ to test & inspect MQTT messages or use the MQTT browser from within Home Assistant
@@ -142,27 +175,6 @@ For all SMR specs, see [netbeheer](https://www.netbeheernederland.nl/dossiers/sl
 GPL v3
 
 ## Versions
-3.0.0
-* Change HA Auto Discovery. Solve warning:
-Discovered entities with a name that starts with the device name
-This stops working in version 2024.2.0. Please address before upgrading.
-Credits: ricko1
-
-2.0.0 - 2.0.1
-* Updated mqtt library
-* Removed need for INFLUXDB label
-* Added telegraf-dsmr.conf
-* Added example (dsmr50_Stromnetz_Graz_Austria.py) for Austria dsmr (Stromnetz Graz, by karlkashofer)
-
-1.0.13
-* Add zero/non-zero check on data (as sometimes eg gas and power consumed values in influxdb became zero)
-
-1.0.12
-* Fix exit code (SUCCESS vs FAILURE)
-
-1.0.2 - 1.0.4:
-* Potential bug fix in parser
-* Add MQTT last will/testament
-
-1.0.0:
-* Initial release
+1.0.0
+* Updated OBIS codes to match the Fluvius meter readings including monthly peak
+* Forked version 3.0.0 from https://github.com/hansij66/dsmr2mqtt
