@@ -36,6 +36,8 @@ logger = logging.getLogger(script + "." + __name__)
 serial = None
 number_descriptions = None
 meter_type = None
+version = None
+mqtt_tag = None
 
 
 class ParseTelegrams(threading.Thread):
@@ -69,6 +71,14 @@ class ParseTelegrams(threading.Thread):
 
   def __publish_telegram(self, listofjsondicts):
     logger.debug('LOGGER: publishing telegram')
+    global mqtt_tag
+
+    if mqtt_tag is None:
+      mqtt_tag = cfg.MQTT_TOPIC_PREFIX
+      logger.info(f'MQTT_TOPIC_PREFIX used for publishing data = {mqtt_tag}/')
+    else:
+      pass
+
     # publish the dictionaries per topic
     logger.debug('LOGGER: publish the dictionaries per topic')
     for d in listofjsondicts:
@@ -97,7 +107,13 @@ class ParseTelegrams(threading.Thread):
     logger.debug('LOGGER: decoding telegram message')
     global serial
     global number_descriptions
+    global version
     # logger.debug(f">> index={index};  element={element}")
+
+    """
+    re.compile(dsmr.definition[index][dsmr.REGEX]).groups is a property of type INT
+    re.compile(dsmr.definition[index][dsmr.REGEX]).match(element).groups() is a method, returning a tuple.
+    """
 
     try:
       # Extract result from telegram element, based on dsmr definition
@@ -130,7 +146,10 @@ class ParseTelegrams(threading.Thread):
           raise ValueError("data == 0, not allowed, skip telegram")
 
       else:
-        data = eval(cast)(dsmr_data)
+        if index == "0-0:96.1.1":
+          data = bytes.fromhex(eval(cast)(dsmr_data)).decode("ASCII")
+        else:
+          data = eval(cast)(dsmr_data)
         # logger.debug(f"CAST = {}")
 
       # dict & json pair
@@ -144,10 +163,17 @@ class ParseTelegrams(threading.Thread):
       else:
         pass
 
+      if version is None:
+        if tag == "version":
+          version = data
+      else:
+        pass
+
       if serial is None:
         if tag == "serial":
           serial = data
-          logger.info(f"Meter serial found = {serial}. Use the last 10 characters \"{serial[-10:]}\" to append to your MQTT_TOPIC_PREFIX in config.py to make the meter unique")
+          logger.info(f'Meter type found = {meter_type} with DSMR version = {version}')
+          logger.info(f'Meter serial found = {serial}. Unless changed, the last 3 characters "{serial[-3:]}" are appended to your MQTT_TOPIC_PREFIX in config.py')
       else:
         pass
 
@@ -249,7 +275,6 @@ class ParseTelegrams(threading.Thread):
         if re.match("^\/(FLU5)\\.*", element):
           if meter_type is None:
             meter_type = element
-            logger.info(f'Meter type found = {meter_type}')
         else:
           pass
         pass

@@ -69,15 +69,15 @@ class Discovery(threading.Thread):
     
     # create device JSON
     logger.debug('LOGGER: create device JSON')
-    d["name"] = "Status"
-    d["unique_id"] = "dsmr-device"
+    d["name"] = "status"
+    d["unique_id"] = "fluvius-device"
     d["state_topic"] = cfg.MQTT_TOPIC_PREFIX + "/status"
     d["icon"] = "mdi:home-automation"
-    d["device"] = {"name": "HA dsmr reader",
+    d["device"] = {"name": "Fluvius P1",
                    "sw_version": self.__version,
-                   "model": "P1 USB/dsmr-mqtt",
-                   "manufacturer": "https://github.com/smartathome/dsmr2mqtt",
-                   "identifiers": ["dsmr2mqtt"]
+                   "model": "P1 USB/fluvius-mqtt",
+                   "manufacturer": "https://github.com/smartathome/fluvius2mqtt",
+                   "identifiers": ["fluvius"]
                    }
 
     self.__listofjsondicts.append(d)
@@ -135,11 +135,12 @@ class Discovery(threading.Thread):
             logger.warning(f"Unknown unit_of_measurement = {d['unit_of_measurement']}")
 
         d["icon"] = dsmr.definition[index][dsmr.HA_ICON]
-        d["device"] = { "identifiers": [ "dsmr2mqtt" ] }
+        d["device"] = { "identifiers": [ "fluvius" ] }
 
         logger.debug('LOGGER: %s', d)
 
         self.__listofjsondicts.append(d)
+
 
 
   def run(self):
@@ -154,6 +155,7 @@ class Discovery(threading.Thread):
 
     # infinite loop
     if cfg.HA_DISCOVERY:
+      logger.info(f'Home Assistant config discovery is enabled')
       while not self.__stopper.is_set():
         # calculate time elapsed since last MQTT
         t_elapsed = int(time.time()) - self.__lastmqtt
@@ -166,6 +168,8 @@ class Discovery(threading.Thread):
         else:
           # wait...
           time.sleep(0.5)
+    else:
+      logger.info(f'Home Assistant config discovery is DISABLED')
 
     # If configured, remove MQTT Auto Discovery configuration
     if cfg.HA_DELETECONFIG:

@@ -10,7 +10,7 @@ but only data to be sent, set HA_DISCOVERY = 0 and MAXRATE > 0.
 To completely disable HA_DISCOVERY, set HA_DISCOVERY = False in config.py
 
 Configuration:
-OBIS code + all fields (11) must be present as a line in the definition for the data to be parsed properly
+OBIS code + all fields (11) must be present in the definition for the data to be parsed properly
 
 index: [
   DESCRIPTION,
@@ -40,7 +40,9 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-# See the spec for the available OBIS codes: https://www.netbeheernederland.nl/_upload/Files/Slimme_meter_15_a727fce1f1.pdf
+# See the spec for the available OBIS codes: 
+# https://www.fluvius.be/sites/fluvius/files/2019-12/e-mucs_h_ed_1_3.pdf
+# https://www.netbeheernederland.nl/_upload/Files/Slimme_meter_15_a727fce1f1.pdf
 
 DESCRIPTION = 0       # Description, specify units of measure between []
 MQTT_TOPIC = 1        # MQTT base topic; will be packed in a json message
@@ -71,60 +73,190 @@ ha_supported_units = ["kWh", "kW", "A", "V", "m3", "m\u00b3"]
 # MQTT_TOPIC is prefixed with MQTT_TOPIC_PREFIX (config.py)
 # Comment what is not being used
 
-#               DESCRIPTION                                      MQTT_TOPIC  MQTT_TAG                 REGEX                      UNIT   DT       DV   MP      MAXR    HA_DISCOVERY
+# index: [
+#   DESCRIPTION,
+#   MQTT_TOPIC,
+#   MQTT_TAG,
+#   REGEX,
+#   UNIT,
+#   DATATYPE,
+#   DATAVALIDATION,
+#   MULTIPLICATION,
+#   MAXRATE,
+#   HA_DISCOVERY,
+#   HA_ICON
+# ]
+
 definition = {
-"1-3:0.2.8":    ["Version information for P1 output",            "system",   "dsmr_version",          "^.*\((.*)\)",             "",    "str",   "0", "1",    "12",  "1", "mdi:counter"],
+#"1-3:0.2.8":
+#   ["Version information for P1", "system", "dsmr", "^.*\((.*)\)",
+#   "", "str", "0", "1", "12", "1", "mdi:counter"],
 
-"0-0:96.1.4":   ["Version information",                          "elec",     "version_information",   "^.*\((.*)\)",             "",    "str",   "1", "1",    "60",  "1", "mdi:counter"],
-"0-0:96.1.1":   ["Equipment identifier",                         "elec",     "serial",                "^.*\((\d{28})",             "",    "str",   "1", "1",    "60",  "1", "mdi:counter"],
-"0-0:1.0.0":    ["Timestamp [s]",                                "elec",     "timestamp",             "^.*\((\d{12})(S|W)\)",    "",    "int",   "1", "1",    "60",  "1", "mdi:counter"],
-"0-0:96.7.21.255": ["Number of power failures in any phases",      "elec",   "power_failures",        "^.*\((.*)\)",             "",    "str",   "0", "1",    "60",  "1", "mdi:counter"],
-"0-0:96.7.9.255":  ["Number of long power failures in any phases", "elec",   "long_power_failures",   "^.*\((.*)\)",             "",    "str",   "0", "1",    "60",  "1", "mdi:counter"],
-"0-0:96.14.0":  ["Tariff indicator electricity",                 "elec",     "tariff_indicator",      "^.*\((.*)\)",             "",    "str",   "0", "1",    "60",  "1", "mdi:counter"],
+"0-0:96.1.4":
+  ["Version information", "elec", "version", "^.*\((.*)\)", "",
+   "str", "1", "1", "60", "1", "mdi:counter"],
 
-"1-0:21.7.0":   ["Instantaneous active power L1 +P",             "elec",     "P_L1_consumed",         "^.*\((.*)\*kW\)",         "kW",  "float", "0", "1", "60",  "1", "mdi:gauge"],
-"1-0:41.7.0":   ["Instantaneous active power L2 +P",             "elec",     "P_L2_consumed",         "^.*\((.*)\*kW\)",         "kW",  "float", "0", "1", "60",  "0", "mdi:gauge"],
-"1-0:61.7.0":   ["Instantaneous active power L3 +P",             "elec",     "P_L3_consumed",         "^.*\((.*)\*kW\)",         "kW",  "float", "0", "1", "60",  "0", "mdi:gauge"],
-"1-0:22.7.0":   ["Instantaneous active power L1 -P",             "elec",     "P_L1_produced",         "^.*\((.*)\*kW\)",         "kW",  "float", "0", "1", "60",  "1", "mdi:gauge"],
-"1-0:42.7.0":   ["Instantaneous active power L2 -P",             "elec",     "P_L2_produced",         "^.*\((.*)\*kW\)",         "kW",  "float", "0", "1", "60",  "0", "mdi:gauge"],
-"1-0:62.7.0":   ["Instantaneous active power L3 -P",             "elec",     "P_L3_produced",         "^.*\((.*)\*kW\)",         "kW",  "float", "0", "1", "60",  "0", "mdi:gauge"],
-"1-0:1.7.0":    ["Actual electricity power delivered +P",        "elec",     "P_consumed",            "^.*\((.*)\*kW\)",         "kW",  "float", "0", "1", "60",  "1", "mdi:gauge"],
-"1-0:2.7.0":    ["Actual electricity power received -P",         "elec",     "P_produced",            "^.*\((.*)\*kW\)",         "kW",  "float", "0", "1", "60",  "1", "mdi:gauge"],
+"0-0:96.1.1":
+  ["Equipment identifier", "elec", "serial", "^.*\((\d{28})", "",
+   "str", "1", "1", "60", "1", "mdi:counter"],
 
-"0-1:24.2.1":   ["Gas consumption [m\u00b3]",                    "gas",      "gas_consumed",          "^.*\((.*)\*m3\)",         "kW",  "float", "1", "1000", "60",  "0", "mdi:counter"],
-"0-1:96.1.0":   ["Equipment Identifier",                         "gas",      "serial",                "^.*\(\d{26}(.*)\)",       "",    "str",   "1", "1",    "60",  "0", "mdi:counter"],
+"0-0:1.0.0":
+  ["Timestamp", "elec", "timestamp", "^.*\((\d{12})(S|W)\)", "",
+   "int", "1", "1", "60", "1", "mdi:counter"],
 
-"1-0:1.8.1":    ["Electricity consumed (Tariff 1)",              "elec",     "elec_consumed_tar1",    "^.*\((.*)\*kWh\)",        "kWh", "float", "1", "1", "60",   "1", "mdi:counter"],
-"1-0:1.8.2":    ["Electricity consumed (Tariff 2)",              "elec",     "elec_consumed_tar2",    "^.*\((.*)\*kWh\)",        "kWh", "float", "1", "1", "60",   "1", "mdi:counter"],
-"1-0:2.8.1":    ["Electricity produced (Tariff 1)",              "elec",     "elec_produced_tar1",    "^.*\((.*)\*kWh\)",        "kWh", "float", "1", "1", "60",   "1", "mdi:counter"],
-"1-0:2.8.2":    ["Electricity produced (Tariff 2)",              "elec",     "elec_produced_tar2",    "^.*\((.*)\*kWh\)",        "kWh", "float", "1", "1", "60",   "1", "mdi:counter"],
+"0-0:96.7.21.255":
+  ["Number power failures", "elec", "power_failures", "^.*\((.*)\)",
+   "", "str", "0", "1", "60", "1", "mdi:counter"],
 
-# Virtual, not existing in dsmr telegram & specification, to sum tarif 1 & 2 to a single message
-"1-0:1.8.3":    ["Electricity consumed",                         "elec",     "elec_consumed",         "^.*\((.*)\*kWh\)",        "kWh", "float", "1", "1", "60",  "1", "mdi:counter"],
-"1-0:2.8.3":    ["Electricity produced",                         "elec",     "elec_produced",         "^.*\((.*)\*kWh\)",        "kWh", "float", "1", "1", "60",  "1", "mdi:counter"],
+"0-0:96.7.9.255":
+  ["Number long power failures", "elec", "long_power_failures", "^.*\((.*)\)",
+   "", "str", "0", "1", "60", "1", "mdi:counter"],
 
-"1-0:32.7.0":   ["Instantaneous voltage L1",                     "elec",     "V_L1",                  "^.*\((.*)\*V\)",          "V",   "float", "0", "1",    "60",  "1", "mdi:gauge"],
-"1-0:52.7.0":   ["Instantaneous voltage L2",                     "elec",     "V_L2",                  "^.*\((.*)\*V\)",          "V",   "float", "0", "1",    "60",  "0", "mdi:gauge"],
-"1-0:72.7.0":   ["Instantaneous voltage L3",                     "elec",     "V_L3",                  "^.*\((.*)\*V\)",          "V",   "float", "0", "1",    "60",  "0", "mdi:gauge"],
-"1-0:31.7.0":   ["Instantaneous current L1",                     "elec",     "I_L1",                  "^.*\((.*)\*A\)",          "A",   "float", "0", "1",    "60",  "1", "mdi:gauge"],
-"1-0:51.7.0":   ["Instantaneous current L2",                     "elec",     "I_L2",                  "^.*\((.*)\*A\)",          "A",   "float", "0", "1",    "60",  "0", "mdi:gauge"],
-"1-0:71.7.0":   ["Instantaneous current L3",                     "elec",     "I_L3",                  "^.*\((.*)\*A\)",          "A",   "float", "0", "1",    "60",  "0", "mdi:gauge"],
+"0-0:96.14.0":
+  ["Tariff indicator electricity", "elec", "tariff_indicator", "^.*\((.*)\)",
+  "", "str", "0", "1", "60", "1", "mdi:counter"],
 
-"1-0:32.36.0":  ["Number of voltage swells L1",                  "elec",     "V_L1_swells",           "^.*\((.*)\)",             "",    "str",   "0", "1",    "60",  "1", "mdi:gauge"],
-"1-0:52.36.0":  ["Number of voltage swells L2",                  "elec",     "V_L2_swells",           "^.*\((.*)\)",             "",    "str",   "0", "1",    "60",  "0", "mdi:gauge"],
-"1-0:72.36.0":  ["Number of voltage swells L3",                  "elec",     "V_L3_swells",           "^.*\((.*)\)",             "",    "str",   "0", "1",    "60",  "0", "mdi:gauge"],
-"1-0:32.32.0":  ["Number of voltage sags L1",                    "elec",     "V_L1_sags",             "^.*\((.*)\)",             "",    "str",   "0", "1",    "60",  "1", "mdi:gauge"],
-"1-0:52.32.0":  ["Number of voltage sags L2",                    "elec",     "V_L2_sags",             "^.*\((.*)\)",             "",    "str",   "0", "1",    "60",  "0", "mdi:gauge"],
-"1-0:72.32.0":  ["Number of voltage sags L3",                    "elec",     "V_L3_sags",             "^.*\((.*)\)",             "",    "str",   "0", "1",    "60",  "0", "mdi:gauge"],
+"1-0:21.7.0":
+  ["Instant active power L1 +P", "elec", "P_L1_cons", "^.*\((.*)\*kW\)",
+   "kW", "float", "0", "1", "60", "1", "mdi:gauge"],
 
-"0-0:96.3.10":  ["Breaker state",                                "elec",     "breaker_state",         "^.*\((.*)\)",             "",    "str",   "0", "1",    "60",  "1", "mdi:gauge"],
-"0-0:17.0.0":   ["Limiter threshold",                            "elec",     "limiter_threshold",     "^.*\((.*)\*kW\)",         "",    "float", "0", "1",    "60",  "1", "mdi:gauge"],
-"1-0:31.4.0":   ["Fuse supervision threshold L1",                "elec",     "fuse_threshold",        "^.*\((.*)\*A\)",          "",    "float", "0", "1",    "60",  "1", "mdi:gauge"],
-"0-0:96.13.0":  ["Text message",                                 "elec",     "text_message",          "^.*\((.*)\)",             "",    "str",   "0", "1",    "60",  "1", "mdi:gauge"],
+"1-0:41.7.0":
+  ["Instant active power L2 +P", "elec", "P_L2_cons", "^.*\((.*)\*kW\)",
+  "kW", "float", "0", "1", "60", "0", "mdi:gauge"],
 
-"1-0:1.6.0":    ["Monthly peak",                                 "elec",     "monthly_peak",          "^.*\((\d{12})(S|W)\)\((.*)\*kW\)",   "",    "str",   "0", "1",    "60",  "1", "mdi:gauge"],
-#"0-0:98.1.0":    ["Historical peaks",                                 "elec",     "historical_peaks",          "^.*\((.*)S\)\((.*)\*kW\)",   "",    "int",   "0", "1",    "12",  "1", "mdi:gauge"],
-"1-0:1.4.0":    ["Current average demand",                       "elec",     "average_demand",        "^.*\((.*)\*kW\)",         "",    "float", "0", "1",    "60",  "1", "mdi:gauge"]
+"1-0:61.7.0":
+  ["Instant active power L3 +P", "elec", "P_L3_cons", "^.*\((.*)\*kW\)",
+  "kW", "float", "0", "1", "60", "0", "mdi:gauge"],
+
+"1-0:22.7.0":
+  ["Instant active power L1 -P", "elec", "P_L1_prod", "^.*\((.*)\*kW\)",
+  "kW", "float", "0", "1", "60", "1", "mdi:gauge"],
+
+"1-0:42.7.0":
+  ["Instant active power L2 -P", "elec", "P_L2_prod", "^.*\((.*)\*kW\)",
+  "kW", "float", "0", "1", "60", "0", "mdi:gauge"],
+
+"1-0:62.7.0":
+  ["Instant active power L3 -P", "elec", "P_L3_prod", "^.*\((.*)\*kW\)",
+  "kW", "float", "0", "1", "60", "0", "mdi:gauge"],
+
+"1-0:1.7.0":
+  ["Actual elec power del +P", "elec", "P_cons", "^.*\((.*)\*kW\)",
+  "kW", "float", "0", "1", "60", "1", "mdi:gauge"],
+
+"1-0:2.7.0":
+  ["Actual elec power rec -P", "elec", "P_prod", "^.*\((.*)\*kW\)",
+  "kW", "float", "0", "1", "60", "1", "mdi:gauge"],
+
+"0-1:24.2.1":
+  ["Gas consumption [m\u00b3]", "gas", "gas_cons", "^.*\((.*)\*m3\)",
+  "kW", "float", "1", "1000", "60", "0", "mdi:counter"],
+
+"0-1:96.1.0":
+  ["Equipment Identifier", "gas", "serial", "^.*\(\d{26}(.*)\)",
+  "", "str", "1", "1", "60", "0", "mdi:counter"],
+
+"1-0:1.8.1":
+  ["Elec consumed (Tariff 1)", "elec", "elec_cons_t1", "^.*\((.*)\*kWh\)",
+  "kWh", "float", "1", "1", "60", "1", "mdi:counter"],
+
+"1-0:1.8.2":
+  ["Elec consumed (Tariff 2)", "elec", "elec_cons_t2", "^.*\((.*)\*kWh\)",
+  "kWh", "float", "1", "1", "60", "1", "mdi:counter"],
+
+"1-0:2.8.1":
+  ["Elec produced (Tariff 1)", "elec", "elec_prod_t1", "^.*\((.*)\*kWh\)",
+  "kWh", "float", "1", "1", "60", "1", "mdi:counter"],
+
+"1-0:2.8.2":
+  ["Elec produced (Tariff 2)", "elec", "elec_prod_t2", "^.*\((.*)\*kWh\)",
+  "kWh", "float", "1", "1", "60", "1", "mdi:counter"],
+
+#  Virtual, not existing in dsmr telegram & specification, to sum tarif 1 & 2 to a single message
+"1-0:1.8.3":
+  ["Elec consumed", "elec", "elec_cons", "^.*\((.*)\*kWh\)",
+  "kWh", "float", "1", "1", "60", "1", "mdi:counter"],
+
+"1-0:2.8.3":
+  ["Elec produced", "elec", "elec_prod", "^.*\((.*)\*kWh\)",
+  "kWh", "float", "1", "1", "60", "1", "mdi:counter"],
+
+"1-0:32.7.0":
+  ["Instant voltage L1", "elec", "V_L1", "^.*\((.*)\*V\)",
+  "V", "float", "0", "1", "60", "1", "mdi:gauge"],
+
+"1-0:52.7.0":
+  ["Instant voltage L2", "elec", "V_L2", "^.*\((.*)\*V\)",
+  "V", "float", "0", "1", "60", "0", "mdi:gauge"],
+
+"1-0:72.7.0":
+  ["Instant voltage L3", "elec", "V_L3", "^.*\((.*)\*V\)",
+  "V", "float", "0", "1", "60", "0", "mdi:gauge"],
+
+"1-0:31.7.0":
+  ["Instant current L1", "elec", "I_L1", "^.*\((.*)\*A\)",
+  "A", "float", "0", "1", "60", "1", "mdi:gauge"],
+
+"1-0:51.7.0":
+  ["Instant current L2", "elec", "I_L2", "^.*\((.*)\*A\)",
+  "A", "float", "0", "1", "60", "0", "mdi:gauge"],
+
+"1-0:71.7.0":
+  ["Instant current L3", "elec", "I_L3", "^.*\((.*)\*A\)",
+  "A", "float", "0", "1", "60", "0", "mdi:gauge"],
+
+"1-0:32.36.0":
+  ["Number voltage swells L1", "elec", "V_L1_sw", "^.*\((.*)\)",
+  "", "str", "0", "1", "60", "1", "mdi:gauge"],
+
+"1-0:52.36.0":
+  ["Number voltage swells L2", "elec", "V_L2_sw", "^.*\((.*)\)",
+  "", "str", "0", "1", "60", "0", "mdi:gauge"],
+
+"1-0:72.36.0":
+  ["Number voltage swells L3", "elec", "V_L3_sw", "^.*\((.*)\)",
+  "", "str", "0", "1", "60", "0", "mdi:gauge"],
+
+"1-0:32.32.0":
+  ["Number voltage sags L1", "elec", "V_L1_sa", "^.*\((.*)\)",
+  "", "str", "0", "1", "60", "1", "mdi:gauge"],
+
+"1-0:52.32.0":
+  ["Number voltage sags L2", "elec", "V_L2_sa", "^.*\((.*)\)",
+  "", "str", "0", "1", "60", "0", "mdi:gauge"],
+
+"1-0:72.32.0":
+  ["Number voltage sags L3", "elec", "V_L3_sa", "^.*\((.*)\)",
+  "", "str", "0", "1", "60", "0", "mdi:gauge"],
+
+"0-0:96.3.10":
+  ["Breaker state", "elec", "breaker", "^.*\((.*)\)",
+  "", "str", "0", "1", "60", "1", "mdi:gauge"],
+
+"0-0:17.0.0":
+  ["Limiter threshold", "elec", "limiter", "^.*\((.*)\*kW\)",
+  "", "float", "0", "1", "60", "1", "mdi:gauge"],
+
+"1-0:31.4.0":
+  ["Fuse supervision threshold L1", "elec", "fuse", "^.*\((.*)\*A\)",
+  "", "float", "0", "1", "60", "1", "mdi:gauge"],
+
+"0-0:96.13.0":
+  ["Text message", "elec", "text", "^.*\((.*)\)",
+  "", "str", "0", "1", "60", "1", "mdi:gauge"],
+
+"1-0:1.6.0":
+  ["Monthly peak", "elec", "m_peak", "^.*\((\d{12})(S|W)\)\((.*)\*kW\)",
+  "", "str", "0", "1", "60", "1", "mdi:gauge"],
+
+#"0-0:98.1.0":
+#  ["Historical peaks", "elec", "h_peak", "^.*\((.*)S\)\((.*)\*kW\)",
+#  "", "int", "0", "1", "12", "1", "mdi:gauge"],
+
+"1-0:1.4.0":
+  ["Current average demand", "elec", "avg_dem", "^.*\((.*)\*kW\)",
+  "", "float", "0", "1", "60", "1", "mdi:gauge"]
+
 }
 
 
