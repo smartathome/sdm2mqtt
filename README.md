@@ -189,4 +189,3 @@ GPL v3
 1.0.0
 * Updated OBIS codes to match the Fluvius meter readings including monthly peak
 * Forked version 3.0.0 from https://github.com/hansij66/dsmr2mqtt
-
