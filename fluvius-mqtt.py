@@ -150,17 +150,18 @@ def main():
 
   # Set status to online
   t_mqtt.set_status(cfg.MQTT_TOPIC_PREFIX + "/status", "online", retain=True)
-  logger.debug(f"LOGGER: ")
+  logger.debug(f'LOGGER: Meter status set to online')
   t_mqtt.do_publish(cfg.MQTT_TOPIC_PREFIX + "/sw-version", f"main={__version__}; mqtt={mqtt.__version__}", retain=True)
 
   # block till t_serial stops receiving telegrams/exits
   t_serial.join()
-  logger.debug("t_serial.join exited; set stopper for other threats")
+  logger.debug(f'LOGGER: t_serial.join exited; set stopper for other threats')
   t_threads_stopper.set()
 
   # Set status to offline
   t_mqtt.set_status(cfg.MQTT_TOPIC_PREFIX + "/status", "offline", retain=True)
-
+  logger.debug(f'LOGGER: Meter status set to offline')
+  
   # Todo check if MQTT queue is empty before setting stopper
   # Use a simple delay of 1sec before closing mqtt
   time.sleep(1)

@@ -13,45 +13,45 @@ Includes Home Assistant MQTT Auto Discovery
 | --- | --- | --- |--- |
 0-0:96.1.4 | Version information | version | 
 0-0:96.1.1 | Equipment identifier | serial | 
-0-0:1.0.0 | Timestamp | timestamp | 
+0-0:1.0.0 | Meter timestamp value and Meter timestamp DST | meter_ts_val;meter_ts_dst | 
 0-0:96.7.21.255 | Number power failures | power_failures | 
 0-0:96.7.9.255 | Number long power failures | long_power_failures | 
 0-0:96.14.0 | Tariff indicator electricity | tariff_indicator | 
-1-0:21.7.0 | Instantaneous active power L1 +P | P_L1_consumed | kW
-1-0:41.7.0 | Instantaneous active power L2 +P | P_L2_consumed | kW
-1-0:61.7.0 | Instantaneous active power L3 +P | P_L3_consumed | kW
-1-0:22.7.0 | Instantaneous active power L1 -P | P_L1_produced | kW
-1-0:42.7.0 | Instantaneous active power L2 -P | P_L2_produced | kW
-1-0:62.7.0 | Instantaneous active power L3 -P | P_L3_produced | kW
-1-0:1.7.0 | Actual electricity power delivered +P | P_consumed | kW
-1-0:2.7.0 | Actual electricity power received -P | P_produced | kW
-0-1:24.2.1 | Gas consumption [m\u00b3] | gas_consumed | kW
+1-0:21.7.0 | Instantaneous active power L1 +P | P_L1_cons | kW
+1-0:41.7.0 | Instantaneous active power L2 +P | P_L2_cons | kW
+1-0:61.7.0 | Instantaneous active power L3 +P | P_L3_cons | kW
+1-0:22.7.0 | Instantaneous active power L1 -P | P_L1_prod | kW
+1-0:42.7.0 | Instantaneous active power L2 -P | P_L2_prod | kW
+1-0:62.7.0 | Instantaneous active power L3 -P | P_L3_prod | kW
+1-0:1.7.0 | Actual electricity power delivered +P | P_cons | kW
+1-0:2.7.0 | Actual electricity power received -P | P_prod | kW
+0-1:24.2.1 | Gas consumption [m\u00b3] | gas_cons | kW
 0-1:96.1.0 | Equipment Identifier | serial | 
-1-0:1.8.1 | Electricity consumed (Tariff 1) | elec_consumed_tar1 | kWh
-1-0:1.8.2 | Electricity consumed (Tariff 2) | elec_consumed_tar2 | kWh
-1-0:2.8.1 | Electricity produced (Tariff 1) | elec_produced_tar1 | kWh
-1-0:2.8.2 | Electricity produced (Tariff 2) | elec_produced_tar2 | kWh
-1-0:1.8.3 | Electricity consumed | elec_consumed | kWh
-1-0:2.8.3 | Electricity produced | elec_produced | kWh
+1-0:1.8.1 | Electricity consumed (Tariff 1) | elec_cons_t1 | kWh
+1-0:1.8.2 | Electricity consumed (Tariff 2) | elec_cons_t2 | kWh
+1-0:2.8.1 | Electricity produced (Tariff 1) | elec_prod_t1 | kWh
+1-0:2.8.2 | Electricity produced (Tariff 2) | elec_prod_t2 | kWh
+1-0:1.8.3 | Electricity consumed | elec_cons | kWh
+1-0:2.8.3 | Electricity produced | elec_prod | kWh
 1-0:32.7.0 | Instantaneous voltage L1 | V_L1 | V
 1-0:52.7.0 | Instantaneous voltage L2 | V_L2 | V
 1-0:72.7.0 | Instantaneous voltage L3 | V_L3 | V
 1-0:31.7.0 | Instantaneous current L1 | I_L1 | A
 1-0:51.7.0 | Instantaneous current L2 | I_L2 | A
 1-0:71.7.0 | Instantaneous current L3 | I_L3 | A
-1-0:32.36.0 | Number of voltage swells L1 | V_L1_swells | 
-1-0:52.36.0 | Number of voltage swells L2 | V_L2_swells | 
-1-0:72.36.0 | Number of voltage swells L3 | V_L3_swells | 
-1-0:32.32.0 | Number of voltage sags L1 | V_L1_sags | 
-1-0:52.32.0 | Number of voltage sags L2 | V_L2_sags | 
-1-0:72.32.0 | Number of voltage sags L3 | V_L3_sags | 
-0-0:96.3.10 | Breaker state | breaker_state | 
-0-0:17.0.0 | Limiter threshold | limiter_threshold | 
-1-0:31.4.0 | Fuse supervision threshold L1 | fuse_threshold | 
-0-0:96.13.0 | Text message | text_message | 
-1-0:1.6.0 | Monthly peak | monthly_peak | kW
+1-0:32.36.0 | Number of voltage swells L1 | V_L1_sw | 
+1-0:52.36.0 | Number of voltage swells L2 | V_L2_sw | 
+1-0:72.36.0 | Number of voltage swells L3 | V_L3_sw | 
+1-0:32.32.0 | Number of voltage sags L1 | V_L1_sa | 
+1-0:52.32.0 | Number of voltage sags L2 | V_L2_sa | 
+1-0:72.32.0 | Number of voltage sags L3 | V_L3_sa | 
+0-0:96.3.10 | Breaker state | breaker | 
+0-0:17.0.0 | Limiter threshold | limiter | 
+1-0:31.4.0 | Fuse supervision threshold L1 | fuse | 
+0-0:96.13.0 | Text message | text | 
+1-0:1.6.0 | Monthly peak timestamp, Monthly peak DST and Monthly peak value | m_peak_ts;m_peak_dst;m_peak_val | kW
 _0-0:98.1.0_ | _Historical peaks_ | _historical_peaks_ | 
-1-0:1.4.0 | Current average demand | average_demand | kW
+1-0:1.4.0 | Current average demand | avg_dem | kW
 
 In `dsmr50.py`, specify:
 * Which messages to be parsed
@@ -64,27 +64,31 @@ In `dsmr50.py`, specify:
 A typical MQTT message broadcasted with meter data
 ```json
 {
-    "I_L1": 1.82,
-    "P_L1_cons": 0,
-    "P_L1_prod": 0.169,
-    "P_cons": 0,
-    "P_prod": 0.169,
-    "V_L1": 235.5,
-    "avg_dem": 0,
+    "I_L1": 2.81,
+    "P_L1_cons": 0.564,
+    "P_L1_prod": 0,
+    "P_cons": 0.564,
+    "P_prod": 0,
+    "V_L1": 235.8,
+    "avg_dem": 0.39,
     "breaker": "1",
-    "elec_cons": 9099.085,
-    "elec_cons_t1": 4533.804,
-    "elec_cons_t2": 4565.281,
-    "elec_prod": 6464.323,
-    "elec_prod_t1": 4580.828,
-    "elec_prod_t2": 1883.495,
+    "elec_cons": 9161.176,
+    "elec_cons_t1": 4567.905,
+    "elec_cons_t2": 4593.271,
+    "elec_prod": 6488.214,
+    "elec_prod_t1": 4593.161,
+    "elec_prod_t2": 1895.053,
     "fuse": 999,
     "limiter": 999.9,
-    "m_peak": "03.924",
+    "m_peak_dst": "S",
+    "m_peak_ts": 231005190000,
+    "m_peak_val": 3.924,
+    "meter_ts_dst": "S",
+    "meter_ts_val": 231012214128,
     "serial": "1SAG0000000262",
     "tariff_indicator": "0001",
     "text": "",
-    "timestamp": 230906095410,
+    "timestamp": 1697139688,
     "version": "50217"
 }
 ```
@@ -94,7 +98,7 @@ A typical MQTT message broadcasted with Home Assistant configuration
     "unique_id": "m_peak",
     "state_topic": "fluvius_262/elec",
     "name": "Monthly peak",
-    "value_template": "{{ value_json.m_peak }}",
+    "value_template": "{{ value_json.m_peak_val }}",
     "icon": "mdi:gauge",
     "device": {
         "identifiers": [

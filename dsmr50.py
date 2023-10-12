@@ -44,13 +44,19 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # https://www.fluvius.be/sites/fluvius/files/2019-12/e-mucs_h_ed_1_3.pdf
 # https://www.netbeheernederland.nl/_upload/Files/Slimme_meter_15_a727fce1f1.pdf
 
-DESCRIPTION = 0       # Description, specify units of measure between []
+# By default, all telegrams will contain 1 OBIS code with a (value)(unit)
+# For the timestamp and monthly peak, multiple values are returned, so we need multiple descriptions, tags and units
+
+DESCRIPTION = 0       # Description
+                      # Specifiy multiple descriptions separated by semicolon
 MQTT_TOPIC = 1        # MQTT base topic; will be packed in a json message
-MQTT_TAG = 2          # MQTT tag in json message; Need to be unique per topic
-REGEX = 3             # python regex to filter extract data from dsmr telegram
+MQTT_TAG = 2          # MQTT tag in json message
+                      # Needs to be unique per topic
+                      # Specify multiple tags separated by semicolon
+REGEX = 3             # Python regex to filter extract data from dsmr telegram
                       # Test with: https://regex101.com/
 UNIT = 4              # Unit of the measurement according to what HA expects
-                      # "0" (zero allowed), "1" (zero not allowed)
+                      # Specify multiple units separated by semicolon
 DATATYPE = 5          # data type of data
                       # Allowed values: int, float, str
                       # Keep in mind that only measurements should have value datatype int or float
@@ -69,6 +75,7 @@ HA_ICON = 10          # HA icons, check https://materialdesignicons.com/
 # Define here all the units that are measured by the meter and that are supported in HA as available device classes
 # See: https://developers.home-assistant.io/docs/core/entity/sensor/#available-device-classes
 ha_supported_units = ["kWh", "kW", "A", "V", "m3", "m\u00b3"]
+index_parse_all_elements = ["0-0:1.0.0", "1-0:1.6.0", "0-0:98.1.0"]
 
 # MQTT_TOPIC is prefixed with MQTT_TOPIC_PREFIX (config.py)
 # Comment what is not being used
@@ -101,8 +108,8 @@ definition = {
    "str", "1", "1", "60", "1", "mdi:tag-text-outline"],
 
 "0-0:1.0.0":
-  ["Timestamp", "elec", "timestamp", "^.*\((\d{12})(S|W)\)", "",
-   "int", "1", "1", "60", "1", "mdi:clock-time-four"],
+  ["Meter timestamp value;Meter timestamp DST", "elec", "meter_ts_val;meter_ts_dst", "^.*\((\d{12})(S|W)\)", "",
+   "int;str", "1", "1", "60", "1", "mdi:clock-time-four"],
 
 "0-0:96.7.21.255":
   ["Number power failures", "elec", "power_failures", "^.*\((.*)\)",
@@ -246,11 +253,11 @@ definition = {
   "", "str", "0", "1", "60", "1", "mdi:text"],
 
 "1-0:1.6.0":
-  ["Monthly peak", "elec", "m_peak", "^.*\((\d{12})(S|W)\)\((.*)\*kW\)",
-  "", "str", "0", "1", "60", "1", "mdi:chart-bar"],
+  ["Monthly peak timestamp;Monthly peak DST;Monthly peak value", "elec", "m_peak_ts;m_peak_dst;m_peak_val", "^.*\((\d{12})(S|W)\)\((.*)\*kW\)",
+  "", "int;str;float", "0", "1", "60", "1", "mdi:chart-bar"],
 
 #"0-0:98.1.0":
-#  ["Historical peaks", "elec", "h_peak", "^.*\((.*)S\)\((.*)\*kW\)",
+#  ["Historical peaks", "elec", "h_peak", "^.*\((\d{12})(S|W)\)\((\d{12})(S|W)\)\((.*)\*kW\)\((\d{12})(S|W)\)\((\d{12})(S|W)\)\((.*)\*kW\)\((\d{12})(S|W)\)\((\d{12})(S|W)\)\((.*)\*kW\)\((\d{12})(S|W)\)\((\d{12})(S|W)\)\((.*)\*kW\)\((\d{12})(S|W)\)\((\d{12})(S|W)\)\((.*)\*kW\)\((\d{12})(S|W)\)\((\d{12})(S|W)\)\((.*)\*kW\)\((\d{12})(S|W)\)\((\d{12})(S|W)\)\((.*)\*kW\)\((\d{12})(S|W)\)\((\d{12})(S|W)\)\((.*)\*kW\)\((\d{12})(S|W)\)\((\d{12})(S|W)\)\((.*)\*kW\)",
 #  "", "int", "0", "1", "12", "1", "mdi:chart-bar"],
 
 "1-0:1.4.0":

@@ -46,7 +46,7 @@ class Discovery(threading.Thread):
     :param str                  version: version of the program
     """
 
-    logger.debug("LOGGER: init class Discovery >>")
+    logger.debug(f'LOGGER: init class Discovery >>')
     super().__init__()
     self.__stopper = stopper
     self.__mqtt = mqtt
@@ -68,7 +68,7 @@ class Discovery(threading.Thread):
     d = {}  # d = dict() does not work....
     
     # create device JSON
-    logger.debug('LOGGER: create device JSON')
+    logger.debug(f'LOGGER: create device JSON')
     d["name"] = "status"
     d["unique_id"] = "fluvius-device"
     d["state_topic"] = cfg.MQTT_TOPIC_PREFIX + "/status"
@@ -82,65 +82,67 @@ class Discovery(threading.Thread):
 
     self.__listofjsondicts.append(d)
 
-    """ Exception in thread Thread-4:
-    Traceback (most recent call last):
-      File "/usr/lib/python3.9/threading.py", line 954, in _bootstrap_inner
-        self.run()
-      File "/opt/dsmr2mqtt/hadiscovery.py", line 141, in run
-        self.__create_discovery_JSON()
-      File "/opt/dsmr2mqtt/hadiscovery.py", line 90, in __create_discovery_JSON
-        if int(dsmr.definition[index][dsmr.HA_DISCOVERY]):
-    ValueError: invalid literal for int() with base 10: 'mdi:counter'
-    """
     # iterate through all dsmr.defintions
-    logger.debug('LOGGER: iterate through all dsmr.defintions')
+    logger.debug(f'LOGGER: iterate through all dsmr.defintions')
     for index in dsmr.definition:
       # select definitions with discovery enabled
-      logger.debug(f'LOGGER: index = {index}')
       if int(dsmr.definition[index][dsmr.HA_DISCOVERY]):
-        d = {}
-        d["unique_id"] = dsmr.definition[index][dsmr.MQTT_TAG]
-        d["state_topic"] = cfg.MQTT_TOPIC_PREFIX + "/" + dsmr.definition[index][dsmr.MQTT_TOPIC]
-        d["name"] = dsmr.definition[index][dsmr.DESCRIPTION]
-        logger.debug(f'LOGGER: description = {d["name"]}')
-        if dsmr.definition[index][dsmr.UNIT] != "":
-          #d["unit_of_measurement"] = re.match(".*\[(\w+)\].*", dsmr.definition[index][dsmr.DESCRIPTION]).group(1)
-          d["unit_of_measurement"] = dsmr.definition[index][dsmr.UNIT]
-        d["value_template"] = "{{ value_json." + dsmr.definition[index][dsmr.MQTT_TAG] + " }}"
+        tag = str(dsmr.definition[index][dsmr.MQTT_TAG])
+        description = str(dsmr.definition[index][dsmr.DESCRIPTION])
+        regex = dsmr.definition[index][dsmr.REGEX]
+        # Check if multiple MQTT_TAG and DESCRIPTION have been defined, semicolon separated
+        tag_matches = re.split(";", tag)
+        description_matches = re.split(";", description)
 
-        # https://www.home-assistant.io/integrations/sensor/
-        # https://developers.home-assistant.io/docs/core/entity/sensor/#long-term-statistics
-        #if dsmr.definition[index][dsmr.UNIT] == "float" or dsmr.definition[index][dsmr.DATATYPE] == "int":
-        #if any(d['main_color'] == 'red' for d in a):
-        if dsmr.definition[index][dsmr.UNIT] in dsmr.ha_supported_units:
-          if d["unit_of_measurement"] == "kWh":
-            d["device_class"] = "energy"
-            d["state_class"] = "total"
-          elif d["unit_of_measurement"] == "kW":
-            d["device_class"] = "power"
-            #d["state_class"] = "measurement"
-          elif d["unit_of_measurement"] == "A":
-            d["device_class"] = "current"
-            #d["state_class"] = "measurement"
-          elif d["unit_of_measurement"] == "V":
-            d["device_class"] = "voltage"
-            #d["state_class"] = "measurement"
-          elif d["unit_of_measurement"] == "m3" or d["unit_of_measurement"] == "m\u00b3":
-            d["device_class"] = "gas"
-            d["state_class"] = "total"
+        # Create loop for telegram messages that will contain multiple values
+        i = 0
 
-            # Homeassistant expects m3 and not liters
-            d["value_template"] = "{{value_json." + dsmr.definition[index][dsmr.MQTT_TAG] + "|float/1000|round(0)" + "}}"
+        # Check if tag, description and regex contain equal amount of elements
+        if tag_matches == description_matches == re.compile(regex).groups:
+          while i < re.compile(regex).groups:
+            d = {}
+            d["unique_id"] = tag_matches[i]
+            d["state_topic"] = cfg.MQTT_TOPIC_PREFIX + "/" + dsmr.definition[index][dsmr.MQTT_TOPIC]
+            d["name"] = description_matches[i]
+            if dsmr.definition[index][dsmr.UNIT] != "":
+              d["unit_of_measurement"] = dsmr.definition[index][dsmr.UNIT]
+            d["value_template"] = "{{ value_json." + tag_matches[i] + " }}"
+
+            # https://www.home-assistant.io/integrations/sensor/
+            # https://developers.home-assistant.io/docs/core/entity/sensor/#long-term-statistics
+            if dsmr.definition[index][dsmr.UNIT] in dsmr.ha_supported_units:
+              if d["unit_of_measurement"] == "kWh":
+                d["device_class"] = "energy"
+                d["state_class"] = "total"
+              elif d["unit_of_measurement"] == "kW":
+                d["device_class"] = "power"
+                #d["state_class"] = "measurement"
+              elif d["unit_of_measurement"] == "A":
+                d["device_class"] = "current"
+                #d["state_class"] = "measurement"
+              elif d["unit_of_measurement"] == "V":
+                d["device_class"] = "voltage"
+                #d["state_class"] = "measurement"
+              elif d["unit_of_measurement"] == "m3" or d["unit_of_measurement"] == "m\u00b3":
+                d["device_class"] = "gas"
+                d["state_class"] = "total"
+
+                # Homeassistant expects m3 and not liters
+                d["value_template"] = "{{value_json." + tag_matches[i] + "|float/1000|round(0)" + "}}"
+              else:
+                logger.warning(f"Unknown unit_of_measurement = {d['unit_of_measurement']}")
+
+            i += 1
+
+            d["icon"] = dsmr.definition[index][dsmr.HA_ICON]
+            d["device"] = { "identifiers": [ "fluvius" ] }
+
+            #logger.debug(f'LOGGER: %s', d)
+            logger.debug(f'LOGGER: sensor config created with unique_id = {d["unique_id"]} and description = {d["name"]}')
+
+            self.__listofjsondicts.append(d)
           else:
-            logger.warning(f"Unknown unit_of_measurement = {d['unit_of_measurement']}")
-
-        d["icon"] = dsmr.definition[index][dsmr.HA_ICON]
-        d["device"] = { "identifiers": [ "fluvius" ] }
-
-        logger.debug('LOGGER: %s', d)
-
-        self.__listofjsondicts.append(d)
-
+            logger.warning(f'WARNING: entries in the DSMR50.py file do not contain equal amounts for tag = {tag}, regex = {regex} and description = {description}')
 
 
   def run(self):
