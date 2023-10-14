@@ -98,7 +98,7 @@ class Discovery(threading.Thread):
         i = 0
 
         # Check if tag, description and regex contain equal amount of elements
-        if tag_matches == description_matches == re.compile(regex).groups:
+        if len(tag_matches) == len(description_matches) == re.compile(regex).groups:
           while i < re.compile(regex).groups:
             d = {}
             d["unique_id"] = tag_matches[i]
@@ -141,8 +141,8 @@ class Discovery(threading.Thread):
             logger.debug(f'LOGGER: sensor config created with unique_id = {d["unique_id"]} and description = {d["name"]}')
 
             self.__listofjsondicts.append(d)
-          else:
-            logger.warning(f'WARNING: entries in the DSMR50.py file do not contain equal amounts for tag = {tag}, regex = {regex} and description = {description}')
+        else:
+          logger.warning(f'WARNING: entries in the DSMR50.py file do not contain equal amounts for tag = {tag}, regex = {regex} and description = {description}')
 
 
   def run(self):

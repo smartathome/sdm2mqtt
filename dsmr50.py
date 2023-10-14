@@ -214,27 +214,27 @@ definition = {
 
 "1-0:32.36.0":
   ["Number voltage swells L1", "elec", "V_L1_sw", "^.*\((.*)\)",
-  "", "str", "0", "1", "60", "1", "mdi:elevation-rise"],
+  "", "str", "0", "1", "1", "1", "mdi:elevation-rise"],
 
 "1-0:52.36.0":
   ["Number voltage swells L2", "elec", "V_L2_sw", "^.*\((.*)\)",
-  "", "str", "0", "1", "60", "0", "mdi:elevation-rise"],
+  "", "str", "0", "1", "1", "0", "mdi:elevation-rise"],
 
 "1-0:72.36.0":
   ["Number voltage swells L3", "elec", "V_L3_sw", "^.*\((.*)\)",
-  "", "str", "0", "1", "60", "0", "mdi:elevation-rise"],
+  "", "str", "0", "1", "1", "0", "mdi:elevation-rise"],
 
 "1-0:32.32.0":
   ["Number voltage sags L1", "elec", "V_L1_sa", "^.*\((.*)\)",
-  "", "str", "0", "1", "60", "1", "mdi:elevation-decline"],
+  "", "str", "0", "1", "1", "1", "mdi:elevation-decline"],
 
 "1-0:52.32.0":
   ["Number voltage sags L2", "elec", "V_L2_sa", "^.*\((.*)\)",
-  "", "str", "0", "1", "60", "0", "mdi:elevation-decline"],
+  "", "str", "0", "1", "1", "0", "mdi:elevation-decline"],
 
 "1-0:72.32.0":
   ["Number voltage sags L3", "elec", "V_L3_sa", "^.*\((.*)\)",
-  "", "str", "0", "1", "60", "0", "mdi:elevation-decline"],
+  "", "str", "0", "1", "1", "0", "mdi:elevation-decline"],
 
 "0-0:96.3.10":
   ["Breaker state", "elec", "breaker", "^.*\((.*)\)",
